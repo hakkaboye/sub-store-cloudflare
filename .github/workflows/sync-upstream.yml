@@ -12,9 +12,11 @@ jobs:
           ref: main
       - name: Pull upstream
         run: |
+          git config user.name "github-actions"
+          git config user.email "41898282+github-actions@users.noreply.github.com"
           git remote add upstream https://github.com/realchendahuang/sub-store-cloudflare.git
           git fetch upstream main
-          git merge --no-edit upstream/main
+          git merge --no-edit --allow-unrelated-histories -X ours upstream/main
       - name: Push (triggers Cloudflare build)
         run: git push origin main
         env:
