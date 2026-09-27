@@ -1,0 +1,21 @@
+name: sync-upstream
+on:
+  schedule:
+    - cron: '0 2 * * *'   # 每天 02:00(UTC)
+  workflow_dispatch: {}   # 允许手动点 Run
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Pull upstream
+        run: |
+          git remote add upstream https://github.com/realchendahuang/sub-store-cloudflare.git
+          git fetch upstream main
+          git merge --no-edit upstream/main
+      - name: Push (triggers Cloudflare build)
+        run: git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
